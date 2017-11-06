@@ -1,0 +1,198 @@
+---
+title: "CARPS Reproducibility Report"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+#### Article ID: CARPS_1-1-2015_PS
+#### Pilot 1: Marc B. Harrison 
+#### Co-pilot: Gobi Dasu
+#### Start date: 10/26/2017
+#### End date: [Insert end date - use US format]   
+
+-------
+
+#### Methods summary: 
+A sense of power has often been tied to how we perceive each other's voice. Social hierarchy is embedded into the structure of society and provides a metric by which others relate to one another. In 1956, the Brunswik Lens Model was introduced to examine how vocal cues might influence hierarchy. In “The Sound of Power: Conveying and Detecting Hierarchical Rank Through Voice,” Ko and colleagues investigated how manipulation of hierarchal rank within a situation might impact vocal acoustic cues. Using the Brunswik Model, six acoustic metrics were utilized (pitch mean & variability, loudness mean & variability, and resonance mean & variability) to isolate a potential contribution between individuals of different hierarchal rank. In the first experiment, Ko, Sadler & Galinsky examined the effect of individuals before and after being assigned a hierarchal rank in a sample of 161 subjects (80 female). Each of the six hierarchy acoustic cues were analyzed with a 2 (high vs. low rank condition)  x 2 analysis of covariance (male vs. female).
+
+------
+
+#### Target outcomes: 
+The impact of hierarchical rank on speakers’ acoustic cues. Each of the six hierarchy-based (i.e., postmanipulation) acoustic variables was submitted to a 2 (condition: high rank, low rank) × 2 (speaker’s sex: female, male) between-subjects analysis of covariance, controlling for the corresponding baseline acoustic variable. Table 4 presents the adjusted means by condition. Condition had a significant effect on pitch, pitch variability, and loudness variability. Speakers’ voices in the high-rank condition had higher pitch, F(1, 156) = 4.48, p < .05; were more variable in loudness, F(1, 156) = 4.66,
+p < .05; and were more monotone (i.e., less variable in pitch), F(1, 156) = 4.73, p < .05, compared with speakers’ voices in the low-rank condition (all other Fs < 1; see the Supplemental Material for additional analyses of covariance involving pitch and loudness).  
+
+------
+
+[The chunk below sets up some formatting options for the R Markdown document]
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE)
+```
+
+## Step 1: Load packages
+
+[Some useful packages are being loaded below. You can add any additional ones you might need too.]
+
+```{r}
+library(tidyverse) # for data munging
+library(knitr) # for kable table formating
+library(haven) # import and export 'SPSS', 'Stata' and 'SAS' Files
+library(readxl) # import excel files
+library(CARPSreports) # custom report functions
+library(psych)
+
+```
+
+## Step 2: Load data
+
+```{r}
+sound <-read_csv("/Users/home/Desktop/CARPS_1-1-2015_PS/data/S1_voice_level_Final.csv")
+DT::datatable(sound)
+```
+
+## Step 3: Tidy data
+
+```{r}
+d.tidy <- sound %>% 
+    rename(pitch_mean = pitch_rmean,
+         pitch_var = pitch_rvar,          
+         loud_mean = intense_rmean,
+         loud_var = intense_rvar, 
+         res_mean = form_rmean,
+         res_var = form_rvar,
+         pitch_mean_p = pitch_smean,
+         pitch_var_p = pitch_svar,          
+         loud_mean_p = intense_smean,
+         loud_var_p = intense_svar, 
+         res_mean_p = form_smean,
+         res_var_p = form_svar)
+
+```
+
+## Step 4: Run analysis
+
+### Pre-processing
+
+[you can remove this section if no pre-processing is required]
+
+```{r}
+
+```
+
+### Descriptive statistics
+
+```{r}
+```
+
+### Inferential statistics
+
+```{r}
+myvars2 <- c("pitch_mean", "pitch_var", "loud_mean","loud_var","res_mean","res_var","pitch_mean_p","pitch_var_p", "loud_mean_p","loud_var_p","res_mean_p","res_var_p","plev", "vsex")
+sound_power <- d.tidy[myvars2]
+
+sound_power$plev <- as.factor(sound_power$plev)
+sound_power$vsex <- as.factor(sound_power$vsex)
+
+## load packages for ANCOVA
+library(car)
+library(compute.es)
+library(effects)
+library(ggplot2)
+library(multcomp)
+library(pastecs)
+library(psych)
+library(lsmeans)
+#library(rcompanion)
+library(Rmisc)
+library(multcompView)
+library(FSA)
+
+
+
+
+contrasts(sound_power$plev)<-cbind(c(1,-1))
+contrasts(sound_power$vsex)<-cbind(c(-1,1))
+
+# ANCOVA 2x2 tests & adjusted means
+
+model1 <-aov(pitch_mean_p ~ plev + vsex + pitch_mean + plev:vsex, data=sound_power)
+Anova(model1, type="III")
+
+lsmeans(model1,
+        pairwise ~ plev,
+        adjust="tukey")
+
+model2 <-aov(pitch_var_p ~ plev + vsex + pitch_var + plev:vsex, data=sound_power)
+Anova(model2, type="III")
+
+lsmeans(model2,
+        pairwise ~ plev,
+        adjust="tukey")
+
+model3 <-aov(loud_mean_p ~ plev + vsex + loud_mean + plev:vsex, data=sound_power)
+Anova(model3, type="III")
+
+
+#difference of reported value
+compareValues(reportedValue = 61.67, obtainedValue = 61.76)
+
+lsmeans(model3,
+        pairwise ~ plev,
+        adjust="tukey")
+
+model4 <-aov(loud_var_p ~ plev + vsex + loud_var + plev:vsex, data=sound_power)
+Anova(model4, type="III")
+
+lsmeans(model4,
+        pairwise ~ plev,
+        adjust="tukey")
+
+model5 <-aov(res_mean_p ~ plev + vsex + res_mean + plev:vsex, data=sound_power)
+Anova(model5, type="III")
+
+lsmeans(model5,
+        pairwise ~ plev,
+        adjust="tukey")
+
+
+model6 <-aov(res_var_p ~ plev + vsex + res_var + plev:vsex, data=sound_power)
+Anova(model6, type="III")
+lsmeans(model6,
+        pairwise ~ plev,
+        adjust="tukey")
+```
+
+## Step 5: Conclusion
+
+[Include the carpsReport function below]
+
+```{r}
+# You can delete this commented text for your report, it is here to serve as a guide.
+# Use the carpsReport() function in this code chunk.
+# Here is a guide to the arguments you should include in the function:
+# Report_Type: Enter 'pilot' or 'final'
+# Article_ID: Enter the article's unique ID code
+# Insufficient_Information_Errors: Enter the number of Insufficient Information Errors
+# Decision_Errors Enter: the number of decision errors
+# Major_Numerical_Errors: Enter the number of major numerical errors
+# Time_to_Complete: Enter the estimated time to complete the report in minutes
+# Author_Assistance: Enter whether author assistance was required (TRUE/FALSE)
+# FOR EXAMPLE:
+ carpsReport(Report_Type = "pilot", 
+             Article_ID = "CARPS_1-1-2015_PS", 
+             Insufficient_Information_Errors = 0, 
+             Decision_Errors = 0, 
+             Major_Numerical_Errors = 0, 
+             Time_to_Complete = 120, 
+             Author_Assistance = FALSE)
+```
+
+All reported tests aligned with ANOCVA's produced in this replication minus one minor numerical error for a F-value in model3: loudness mean with sex; p-value was still significant, thus replication of experiment #1 was a SUCCESS. 
+
+[This function will output information about the package versions used in this report:]
+
+```{r session_info, include=TRUE, echo=TRUE, results='markup'}
+devtools::session_info()
+```
