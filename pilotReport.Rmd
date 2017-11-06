@@ -10,7 +10,7 @@ output:
 #### Pilot 1: Marc B. Harrison 
 #### Co-pilot: Gobi Dasu
 #### Start date: 10/26/2017
-#### End date: [Insert end date - use US format]   
+#### End date: 11/5/17   
 
 -------
 
@@ -127,6 +127,9 @@ lsmeans(model1,
 model2 <-aov(pitch_var_p ~ plev + vsex + pitch_var + plev:vsex, data=sound_power)
 Anova(model2, type="III")
 
+#difference of reported value
+compareValues(reportedValue = 61.67, obtainedValue = 61.76)
+
 lsmeans(model2,
         pairwise ~ plev,
         adjust="tukey")
@@ -134,9 +137,6 @@ lsmeans(model2,
 model3 <-aov(loud_mean_p ~ plev + vsex + loud_mean + plev:vsex, data=sound_power)
 Anova(model3, type="III")
 
-
-#difference of reported value
-compareValues(reportedValue = 61.67, obtainedValue = 61.76)
 
 lsmeans(model3,
         pairwise ~ plev,
