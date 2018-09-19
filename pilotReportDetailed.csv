@@ -1,0 +1,3 @@
+articleID,reportedValue,obtainedValue,valueType,percentageError,comparisonOutcome,eyeballCheck
+1-1-2015_PS,1,1,df,0,MATCH,NA
+1-1-2015_PS,156,156,df,0,MATCH,NA
