@@ -26,7 +26,10 @@ A sense of power has often been tied to how we perceive each other's voice. Soci
 ------
 
 #### Target outcomes: 
-> The impact of hierarchical rank on speakers’ acoustic cues. Each of the six hierarchy-based (i.e., postmanipulation) acoustic variables was submitted to a 2 (condition: high rank, low rank) × 2 (speaker’s sex: female, male) between-subjects analysis of covariance, controlling for the corresponding baseline acoustic variable. Table 4 presents the adjusted means by condition. Condition had a significant effect on pitch, pitch variability, and loudness variability. Speakers’ voices in the high-rank condition had higher pitch, F(1, 156) = 4.48, p < .05; were more variable in loudness, F(1, 156) = 4.66, p < .05; and were more monotone (i.e., less variable in pitch), F(1, 156) = 4.73, p < .05, compared with speakers’ voices in the low-rank condition (all other Fs < 1; see the Supplemental Material for additional analyses of covariance involving pitch and loudness). (from Ko et al., 2015, p. 6)
+> The impact of hierarchical rank on speakers’ acoustic cues. Each of the six hierarchy-based (i.e., postmanipulation) acoustic variables was submitted to a 2 (condition: high rank, low rank) × 2 (speaker’s sex: female, male) between-subjects analysis of covariance, controlling for the corresponding baseline acoustic variable. Table 4 presents the adjusted means by condition. Condition had a significant effect on pitch, pitch variability, and loudness variability. Speakers’ voices in the high-rank condition had higher pitch, **F(1, 156) = 4.48, p < .05**; were more variable in loudness, **F(1, 156) = 4.66, p < .05**; and were more monotone (i.e., less variable in pitch), **F(1, 156) = 4.73, p < .05**, compared with speakers’ voices in the low-rank condition (**all other Fs < 1**; see the Supplemental Material for additional analyses of covariance involving pitch and loudness). (from Ko et al., 2015, p. 6; emphasis added)
+
+The adjusted means for these analyses are reported in Table 4:
+![](Table4_AdjustedMeans.png)
 
 ------
 
@@ -98,12 +101,12 @@ d.tidy <- sound %>%
 
 ### Descriptive statistics
 
-```{r}
-```
+In the paper, the adjusted means are reported (see Table 4). These are reproduced in the section Inferential Statistics below.
 
 ### Inferential statistics
 
 ```{r}
+# select relevant variables --------------------
 myvars2 <- c("pitch_mean", "pitch_var", "loud_mean","loud_var","res_mean","res_var","pitch_mean_p","pitch_var_p", "loud_mean_p","loud_var_p","res_mean_p","res_var_p","plev", "vsex")
 sound_power <- d.tidy[myvars2]
 
@@ -113,58 +116,125 @@ sound_power$vsex <- as.factor(sound_power$vsex)
 contrasts(sound_power$plev) <- cbind(c(1,-1))
 contrasts(sound_power$vsex) <- cbind(c(-1,1))
 
-# ANCOVA 2x2 tests & adjusted means
+# ANCOVA 2x2 tests & adjusted means ------------
 
+# model 1: pitch mean
 model1 <- aov(pitch_mean_p ~ plev + vsex + pitch_mean + plev:vsex, data = sound_power)
-Anova(model1, type="III")
+anova1 <- Anova(model1, type="III")
+anova1
 
+# adjusted means model 1
 lsmeans(model1,
         pairwise ~ plev,
-        adjust="tukey")
+        adjust = "tukey")
 
-reportObject <- reproCheck(reportedValue = "1", obtainedValue = 1, valueType = 'df')
-reportObject <- reproCheck(reportedValue = "156", obtainedValue = 156, valueType = 'df')
+# check inferential statistics model 1
+reportObject <- reproCheck(reportedValue = "1", obtainedValue = anova1["plev", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "156", obtainedValue = anova1["Residuals", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "4.48", obtainedValue = anova1["plev", "F value"], valueType = "F")
+reportObject <- reproCheck(reportedValue = "<.05", obtainedValue = anova1["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
 
-model2 <- aov(pitch_var_p ~ plev + vsex + pitch_var + plev:vsex, data=sound_power)
-Anova(model2, type="III")
+# check adjusted means model 1
+reportObject <- reproCheck(reportedValue = "158.61", obtainedValue = 158.6098, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "155.52", obtainedValue = 155.5227, valueType = "mean")
 
+# model 2: pitch variability
+model2 <- aov(pitch_var_p ~ plev + vsex + pitch_var + plev:vsex, data = sound_power)
+anova2 <- Anova(model2, type="III")
+anova2
+
+# adjusted means model 2
 lsmeans(model2,
         pairwise ~ plev,
         adjust="tukey")
 
-model3 <- aov(loud_mean_p ~ plev + vsex + loud_mean + plev:vsex, data=sound_power)
-Anova(model3, type="III")
+# check inferential statistics model 2
+reportObject <- reproCheck(reportedValue = "1", obtainedValue = anova2["plev", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "156", obtainedValue = anova2["Residuals", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "4.73", obtainedValue = anova2["plev", "F value"], valueType = "F")
+reportObject <- reproCheck(reportedValue = "<.05", obtainedValue = anova2["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
 
+# check adjusted means model 2
+reportObject <- reproCheck(reportedValue = "1648.37", obtainedValue = 1648.367, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "1425.02", obtainedValue = 1425.016, valueType = "mean")
 
+# model 3: loudness mean
+model3 <- aov(loud_mean_p ~ plev + vsex + loud_mean + plev:vsex, data = sound_power)
+anova3 <- Anova(model3, type="III")
+anova3
+
+# adjusted means model 3
 lsmeans(model3,
         pairwise ~ plev,
         adjust="tukey")
 
-model4 <- aov(loud_var_p ~ plev + vsex + loud_var + plev:vsex, data=sound_power)
-Anova(model4, type="III")
+# check inferential statistics model 3
+reportObject <- reproCheck(reportedValue = "<1", obtainedValue = anova3["plev", "F value"], valueType = "F", eyeballCheck = FALSE)
+reportObject <- reproCheck(reportedValue = ">.05", obtainedValue = anova3["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
 
+# check adjusted means model 3
+reportObject <- reproCheck(reportedValue = "59.34", obtainedValue = 59.33567, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "58.67", obtainedValue = 58.66784, valueType = "mean")
+
+# model 4: loudness variability
+model4 <- aov(loud_var_p ~ plev + vsex + loud_var + plev:vsex, data=sound_power)
+anova4 <- Anova(model4, type="III")
+anova4
+
+# adjusted means model 4
 lsmeans(model4,
         pairwise ~ plev,
         adjust="tukey")
 
+# check inferential statistics model 4
+reportObject <- reproCheck(reportedValue = "1", obtainedValue = anova4["plev", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "156", obtainedValue = anova4["Residuals", "Df"], valueType = "df")
+reportObject <- reproCheck(reportedValue = "4.66", obtainedValue = anova4["plev", "F value"], valueType = "F")
+reportObject <- reproCheck(reportedValue = "<.05", obtainedValue = anova4["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
+
+# check adjusted means model 4
+reportObject <- reproCheck(reportedValue = "196.73", obtainedValue = 196.7301, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "183.48", obtainedValue = 183.4795, valueType = "mean")
+
+# model 5: resonance mean
 model5 <- aov(res_mean_p ~ plev + vsex + res_mean + plev:vsex, data=sound_power)
-Anova(model5, type="III")
+anova5 <- Anova(model5, type="III")
+anova5
 
 lsmeans(model5,
         pairwise ~ plev,
         adjust="tukey")
 
+# check inferential statistics model 5
+reportObject <- reproCheck(reportedValue = "<1", obtainedValue = anova5["plev", "F value"], valueType = "F", eyeballCheck = TRUE)
+reportObject <- reproCheck(reportedValue = ">.05", obtainedValue = anova5["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
 
+# check adjusted means model 5
+reportObject <- reproCheck(reportedValue = "1129.39", obtainedValue = 1129.384, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "1128.81", obtainedValue = 1128.806, valueType = "mean")
+
+# model 6: resonance variability
 model6 <- aov(res_var_p ~ plev + vsex + res_var + plev:vsex, data=sound_power)
-Anova(model6, type="III")
+anova6 <- Anova(model6, type="III")
+anova6
+
 lsmeans(model6,
         pairwise ~ plev,
         adjust="tukey")
+
+# check inferential statistics model 6
+reportObject <- reproCheck(reportedValue = "<1", obtainedValue = anova6["plev", "F value"], valueType = "F", eyeballCheck = TRUE)
+reportObject <- reproCheck(reportedValue = ">.05", obtainedValue = anova6["plev", "Pr(>F)"], valueType = "p", eyeballCheck = TRUE)
+
+# check adjusted means model 6
+reportObject <- reproCheck(reportedValue = "42170.78", obtainedValue = 42170.78, valueType = "mean")
+reportObject <- reproCheck(reportedValue = "43654.54", obtainedValue = 43654.54, valueType = "mean")
+
 ```
 
 ## Step 5: Conclusion
 
-All reported tests aligned with ANOCVA's produced in this replication minus one minor numerical error for a F-value in model3: loudness mean with sex; p-value was still significant, thus replication of experiment #1 was a SUCCESS. 
+All reported tests aligned with the ANCOVAs and the accompanying adjusted means produced in this replication minus one major error for an F-value in model3: loudness mean with sex. In the results section it was stated that all F-values of the non-significant tests were <1, but in model 3, the F-value was 2.21. This is automatically classified as a major error, but effectively this probably did not affect the results much, since the p-value was still non-significant. 
 
 ```{r}
 Author_Assistance = FALSE # was author assistance provided? (if so, enter TRUE)
@@ -173,13 +243,13 @@ Insufficient_Information_Errors <- 0 # how many discrete insufficient informatio
 
 # Assess the causal locus (discrete reproducibility issues) of any reproducibility errors. Note that there doesn't necessarily have to be a one-to-one correspondance between discrete reproducibility issues and reproducibility errors. For example, it could be that the original article neglects to mention that a Greenhouse-Geisser correct was applied to ANOVA outcomes. This might result in multiple reproducibility errors, but there is a single causal locus (discrete reproducibility issue).
 
-locus_typo <- NA # how many discrete issues did you encounter that related to typographical errors?
-locus_specification <- NA # how many discrete issues did you encounter that related to incomplete, incorrect, or unclear specification of the original analyses?
-locus_analysis <- NA # how many discrete issues did you encounter that related to errors in the authors' original analyses?
-locus_data <- NA # how many discrete issues did you encounter that related to errors in the data files shared by the authors?
-locus_unidentified <- NA # how many discrete issues were there for which you could not identify the cause
+locus_typo <- 0 # how many discrete issues did you encounter that related to typographical errors?
+locus_specification <- 0 # how many discrete issues did you encounter that related to incomplete, incorrect, or unclear specification of the original analyses?
+locus_analysis <- 0 # how many discrete issues did you encounter that related to errors in the authors' original analyses?
+locus_data <- 0 # how many discrete issues did you encounter that related to errors in the data files shared by the authors?
+locus_unidentified <- 1 # how many discrete issues were there for which you could not identify the cause
 
-Affects_Conclusion <- NA # Do any reproducibility issues encounter appear to affect the conclusions made in the original article? This is a subjective judgement, but you should taking into account multiple factors, such as the presence/absence of decision errors, the number of target outcomes that could not be reproduced, the type of outcomes that could or could not be reproduced, the difference in magnitude of effect sizes, and the predictions of the specific hypothesis under scrutiny.
+Affects_Conclusion <- FALSE # Do any reproducibility issues encounter appear to affect the conclusions made in the original article? This is a subjective judgement, but you should taking into account multiple factors, such as the presence/absence of decision errors, the number of target outcomes that could not be reproduced, the type of outcomes that could or could not be reproduced, the difference in magnitude of effect sizes, and the predictions of the specific hypothesis under scrutiny.
 ```
 
 ```{r}
