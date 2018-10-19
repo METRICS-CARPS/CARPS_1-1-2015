@@ -33,15 +33,11 @@ The adjusted means for these analyses are reported in Table 4:
 
 ------
 
-[The chunk below sets up some formatting options for the R Markdown document]
-
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE)
 ```
 
 ## Step 1: Load packages
-
-[Some useful packages are being loaded below. You can add any additional ones you might need too.]
 
 ```{r}
 library(tidyverse) # for data munging
@@ -92,12 +88,6 @@ d.tidy <- sound %>%
 ## Step 4: Run analysis
 
 ### Pre-processing
-
-[you can remove this section if no pre-processing is required]
-
-```{r}
-
-```
 
 ### Descriptive statistics
 
