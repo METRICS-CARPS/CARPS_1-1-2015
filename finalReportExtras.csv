@@ -1,2 +1,2 @@
 articleID,pilotNames,copilotNames,pilotTTC,copilotTTC,pilotStartDate,copilotStartDate,completionDate,Author_Assistance,finalOutcome,Insufficient_Information_Errors,locus_typo,locus_specification,locus_analysis,locus_data,locus_unidentified,locus_typo_resolved,locus_specification_resolved,locus_analysis_resolved,locus_data_resolved,locus_unidentified_resolved
-1-1-2015_PS,"Marc B. Harrison, Gobi Dasu",Michèle Nuijten,120,220,2020-10-26,2020-10-16,2020-07-22,FALSE,Failure without author assistance,0,0,0,0,0,1,NA,NA,NA,NA,NA
+1-1-2015_PS,"Marc B. Harrison, Gobi Dasu",Michèle Nuijten,120,220,2017-10-26,2018-10-16,2019-07-22,FALSE,Failure without author assistance,0,0,0,0,0,1,NA,NA,NA,NA,NA
